@@ -52,24 +52,19 @@ To verify this flexibility, try our method directly on the MNIST tutorials (rand
 
 ### Visualizations
 
-<figure style="width: 600px; margin: 0 auto;">
-  <img src="assets/demo.jpg" alt="Demo Image" style="width: 100%; height: auto; display: block;">
-  <figcaption style="text-align: center; margin-top: 8px; font-size: 14px; color: #666; font-weight: bold;">
+<div align="center">
+  <img src="assets/demo.jpg" width="1000" />
+  <p style="margin-top: 8px; font-size: 14px; color: #666; font-weight: bold;">
     2-NFE visualization of TwinFlow-Qwen-Image
-  </figcaption>
-</figure>
+  </p>
+</div>
 
-<div style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;">
-  <figure style="flex: 1; min-width: 300px; max-width: 600px;">
-    <img src="assets/case1.jpg" alt="Left Image" style="width: 100%; height: auto; display: block;">
-  </figure>
-  <figure style="flex: 1; min-width: 300px; max-width: 600px;">
-    <img src="assets/case2.jpg" alt="Right Image" style="width: 100%; height: auto; display: block;">
-  </figure>
-  <figcaption style="width: 100%; text-align: center; margin-top: 16px; font-size: 14px; color: #666; font-weight: bold;">
-    Top to bottom: same prompt but different noise (left to right). Shown are: Qwen-Image (50×2 NFE), TwinFlow-Qwen-Image (1-NFE), and Qwen-Image-Lightning-v2.0 (1-NFE).
-    TwinFlow-Qwen-Image generates high-quality images at 1-NFE while preserving strong diversity.
-  </figcaption>
+<div align="center">
+  <img src="assets/case1.jpg" width="500" />
+  <img src="assets/case2.jpg" width="500" />
+  <p style="margin-top: 16px; font-size: 14px; color: #666; font-weight: bold; max-width: 1000px;">
+    Top to bottom: same prompt but different noise (left to right). Shown are: Qwen-Image (50×2 NFE), TwinFlow-Qwen-Image (1-NFE), and Qwen-Image-Lightning-v2.0 (1-NFE). TwinFlow-Qwen-Image generates high-quality images at 1-NFE while preserving strong diversity.
+  </p>
 </div>
 
 ### Overview
@@ -80,12 +75,12 @@ Instead of relying on external discriminators or frozen teachers, TwinFlow creat
 
 Then, the model can rectify itself by minimizing the difference of the velocity fields between real trajectory and fake trajectory, i.e. the $\Delta_\mathrm{v}$. The rectification performs distribution matching as velocity matching, which gradually transforms the model into a 1-step/few-step generator.
 
-<figure style="width: 400px; margin: 0 auto;">
-  <img src="assets/twinflow.png" alt="Demo Image" style="width: 100%; height: auto; display: block;">
-  <figcaption style="text-align: center; margin-top: 8px; font-size: 14px; color: #666; font-weight: bold;">
+<div align="center">
+  <img src="assets/twinflow.png" alt="TwinFlow method overview" width="500" />
+  <p style="margin-top: 8px; font-size: 14px; color: #666; font-weight: bold;">
     TwinFlow method overview
-  </figcaption>
-</figure>
+  </p>
+</div>
 
 Key Advantages:
 - **One-model Simplicity.** We eliminate the need for any auxiliary networks. The model learns to rectify its own flow field, acting as the generator, fake/real score. No extra GPU memory is wasted on frozen teachers or discriminators during training.
@@ -109,17 +104,9 @@ cd tutorials/mnist
 python main.py --save_dir ./outputs/rcgm
 ```
 
-<div style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;">
-  <figure style="flex: 1; min-width: 300px; max-width: 600px;">
-    <img src="assets/mnist_twinflow.png" alt="Left Image" style="width: 100%; height: auto; display: block;">
-  </figure>
-  <figure style="flex: 1; min-width: 300px; max-width: 600px;">
-    <img src="assets/mnist_rcgm.png" alt="Right Image" style="width: 100%; height: auto; display: block;">
-  </figure>
-  <figcaption style="width: 100%; text-align: center; margin-top: 16px; font-size: 14px; color: #666; font-weight: bold;">
-    Left: TwinFlow training on MNIST. Right: RCGM (without TwinFlow) training on MNIST.
-  </figcaption>
-</div>
+| TwinFlow training on MNIST | RCGM (without TwinFlow) training on MNIST |
+|----------------------------|------------------------------------------|
+| ![](assets/mnist_twinflow.png) | ![](assets/mnist_rcgm.png) |
 
 
 ### Inference Demo
