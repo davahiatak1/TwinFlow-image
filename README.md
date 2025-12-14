@@ -1,24 +1,76 @@
 <h1 align="center"><sub><sup>TwinFlow: Realizing One-step Generation on Large Models with Self-adversarial Flows</sup></sub></h1>
 
+<p align="center">
+  <a href="https://zhenglin-cheng.com/" target="_blank">Zhenglin&nbsp;Cheng</a><sup>*</sup> &ensp; <b>&middot;</b> &ensp;
+  <a href="https://scholar.google.com/citations?user=-8XvRRIAAAAJ" target="_blank">Peng&nbsp;Sun</a><sup>*</sup> &ensp; <b>&middot;</b> &ensp;
+  <a href="https://sites.google.com/site/leeplus/" target="_blank">Jianguo&nbsp;Li</a> &ensp; <b>&middot;</b> &ensp;
+  <a href="https://lins-lab.github.io/" target="_blank">Tao&nbsp;Lin</a>
+</p>
+
 <div align="center">
 
 [![Project Page](https://img.shields.io/badge/Project%20Page-133399.svg?logo=homepage)](https://zhenglin-cheng.com/twinflow)&#160;
 [![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Model-TwinFlow--Qwen--Image-yellow)](https://huggingface.co/inclusionAI/TwinFlow)&#160;
+[![Github Repo](https://img.shields.io/badge/inclusionAI%2FTwinFlow-black?logo=github)](https://github.com/inclusionAI/TwinFlow)&#160;
 <a href="https://arxiv.org/abs/2512.05150" target="_blank"><img src="https://img.shields.io/badge/Paper-b5212f.svg?logo=arxiv" height="21px"></a>
-
 
 </div>
 
-## News
+## 🧭 Table of Contents
 
+- [Inference Demo](#inference-demo)
+- [Tutorials on MNIST](#tutorials)
+
+## 📰 News
+
+- We release tutorials on MNIST to provide core implementation of TwinFlow!
 - We release **TwinFlow-Qwen-Image-v1.0**! And we are also working on **Z-Image-Turbo to make it faster!**
+
+## ⚙️ Key Features
+
+1. **Simple and Memory-Efficient Framework**
+   - **No JVPs:** Unlike sCM and MeanFlow, we require no JVP operations, making the method highly memory-friendly.
+   - **No GANs:** Unlike DMD2, We eliminate the need for adversarial loss, removing the complexity of training discriminators.
+   - **No Auxiliary Networks:** Unlike distribution matching methods like VSD/DMD, We require no fixed teacher models for distillation and no additional fake score networks for distribution matching.
+
+This feature is demonstrated by our successful full-parameter few-step training of the Qwen-Image-20B.
+
+2. **Flexible Initialization: "Start with Any Model"**
+   - **Further Distillation:** Thanks to the one-model design, our method can learn the score function starting from any stage, _enabling further distillation on already distilled models._
+
+To verify this flexibility, try our method directly on the MNIST tutorials (random initialization) and stay tuned for our faster Z-Image-Turbo (distilled model initialization).
+
+## 💪 Open-source Plans
+
+- [x] Release inference and sampler code for TwinFlow-Qwen-Image-v1.0.
+- [x] Release training tutorials on MNIST for understanding.
+- [ ] Release training code on SD3.5.
+- [ ] Release faster Z-Image-Turbo.
+- [ ] Release large-scale training code.
 
 ## TwinFlow
 
-Checkout 2-NFE visualization of TwinFlow-Qwen-Image 👇
+### Visualizations
 
-![](assets/demo.jpg)
+<figure style="width: 600px; margin: 0 auto;">
+  <img src="assets/demo.jpg" alt="Demo Image" style="width: 100%; height: auto; display: block;">
+  <figcaption style="text-align: center; margin-top: 8px; font-size: 14px; color: #666; font-weight: bold;">
+    2-NFE visualization of TwinFlow-Qwen-Image
+  </figcaption>
+</figure>
 
+<div style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;">
+  <figure style="flex: 1; min-width: 300px; max-width: 600px;">
+    <img src="assets/case1.jpg" alt="Left Image" style="width: 100%; height: auto; display: block;">
+  </figure>
+  <figure style="flex: 1; min-width: 300px; max-width: 600px;">
+    <img src="assets/case2.jpg" alt="Right Image" style="width: 100%; height: auto; display: block;">
+  </figure>
+  <figcaption style="width: 100%; text-align: center; margin-top: 16px; font-size: 14px; color: #666; font-weight: bold;">
+    Top to bottom: same prompt but different noise (left to right). Shown are: Qwen-Image (50×2 NFE), TwinFlow-Qwen-Image (1-NFE), and Qwen-Image-Lightning-v2.0 (1-NFE).
+    TwinFlow-Qwen-Image generates high-quality images at 1-NFE while preserving strong diversity.
+  </figcaption>
+</div>
 
 ### Overview
 
@@ -28,11 +80,47 @@ Instead of relying on external discriminators or frozen teachers, TwinFlow creat
 
 Then, the model can rectify itself by minimizing the difference of the velocity fields between real trajectory and fake trajectory, i.e. the $\Delta_\mathrm{v}$. The rectification performs distribution matching as velocity matching, which gradually transforms the model into a 1-step/few-step generator.
 
-![](assets/twinflow.png)
+<figure style="width: 400px; margin: 0 auto;">
+  <img src="assets/twinflow.png" alt="Demo Image" style="width: 100%; height: auto; display: block;">
+  <figcaption style="text-align: center; margin-top: 8px; font-size: 14px; color: #666; font-weight: bold;">
+    TwinFlow method overview
+  </figcaption>
+</figure>
 
 Key Advantages:
 - **One-model Simplicity.** We eliminate the need for any auxiliary networks. The model learns to rectify its own flow field, acting as the generator, fake/real score. No extra GPU memory is wasted on frozen teachers or discriminators during training.
 - **Scalability on Large Models.** TwinFlow is **easy to scale on 20B full-parameter training** due to the one-model simplicity. In contrast, methods like VSD, SiD, and DMD/DMD2 require maintaining three separate models for distillation, which not only significantly increases memory consumption—often leading OOM, but also introduces substantial complexity when scaling to large-scale training regimes.
+
+### Tutorials
+
+In the `tutorials/mnist` directory, we provide training code for MNIST that closely follows the implementation described in the paper, intended for tutorial purposes. This tutorial includes the core implementations of $\mathcal{L}_\mathrm{base}$ and $\mathcal{L}_\mathrm{TwinFlow}$.
+
+To run TwinFlow training:
+
+```bash
+cd tutorials/mnist
+python main.py --using_twinflow --save_dir ./outputs/twinflow
+```
+
+To run training without $\mathcal{L}_\mathrm{TwinFlow}$:
+
+```bash
+cd tutorials/mnist
+python main.py --save_dir ./outputs/rcgm
+```
+
+<div style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;">
+  <figure style="flex: 1; min-width: 300px; max-width: 600px;">
+    <img src="assets/mnist_twinflow.png" alt="Left Image" style="width: 100%; height: auto; display: block;">
+  </figure>
+  <figure style="flex: 1; min-width: 300px; max-width: 600px;">
+    <img src="assets/mnist_rcgm.png" alt="Right Image" style="width: 100%; height: auto; display: block;">
+  </figure>
+  <figcaption style="width: 100%; text-align: center; margin-top: 16px; font-size: 14px; color: #666; font-weight: bold;">
+    Left: TwinFlow training on MNIST. Right: RCGM (without TwinFlow) training on MNIST.
+  </figcaption>
+</div>
+
 
 ### Inference Demo
 
@@ -72,7 +160,7 @@ sampler_config = {
 }
 ```
 
-## Citation
+## 📖 Citation
 
 ```bibtex
 @article{cheng2025twinflow,
@@ -83,6 +171,6 @@ sampler_config = {
 }
 ```
 
-## Acknowledgement
+## 🤗 Acknowledgement
 
 TwinFlow is built upon [RCGM](https://github.com/LINs-lab/RCGM) and [UCGM](https://github.com/LINs-lab/UCGM), with much support from [InclusionAI](https://github.com/inclusionAI).
