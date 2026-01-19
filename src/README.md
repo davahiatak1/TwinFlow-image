@@ -135,6 +135,7 @@ sample:
 
 > [!NOTE]
 > When using 1-order training, `any` to NOT required, `one` is required
+> 
 > When using 2-order training, `any` is required, `one` is optional
 > https://github.com/inclusionAI/TwinFlow/blob/cbfdbae2c98d279bbc45213b25909e367d62b5d5/src/methodes/twinflow/twinflow_lora.py#L134-L136
 
@@ -170,6 +171,7 @@ scripts/qwenimage/train_fsdp.sh configs/qwenimage_task/qwenimage_full.yaml
 
 > [!NOTE]
 > When using 1-order training, `any` to NOT required, `one` is required
+> 
 > When using 2-order training, `any` is required, `one` is optional
 > https://github.com/inclusionAI/TwinFlow/blob/cbfdbae2c98d279bbc45213b25909e367d62b5d5/src/methodes/twinflow/twinflow_lora.py#L134-L136
 
